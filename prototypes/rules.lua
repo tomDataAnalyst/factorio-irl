@@ -244,3 +244,20 @@ for _, r in ipairs(world) do
     end
   end
 end
+
+---------------------------------------------------------------------------
+-- Burners that start with free fuel (vanilla burner inserter starts with wood).
+-- Nothing is free (pillar 1), and wood may no longer fit the burner's fuel
+-- categories, so remove starting fuel everywhere.
+---------------------------------------------------------------------------
+local function strip_initial_fuel(t, seen)
+  if type(t) ~= "table" or seen[t] then return end
+  seen[t] = true
+  if rawget(t, "type") == "burner" and rawget(t, "initial_fuel") then
+    t.initial_fuel, t.initial_fuel_percent = nil, nil
+  end
+  for _, v in pairs(t) do strip_initial_fuel(v, seen) end
+end
+for _, list in pairs(data.raw) do
+  for _, p in pairs(list) do strip_initial_fuel(p, {}) end
+end

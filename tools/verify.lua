@@ -78,6 +78,35 @@ for n, e in pairs(entity) do
   end
   if e.next_upgrade and not entity[e.next_upgrade] then fail("entity " .. n .. " next_upgrade missing") end
 end
+-- burners whose starting fuel doesn't fit their fuel categories fail to load
+local function check_burners(where, t, seen)
+  if type(t) ~= "table" or seen[t] then return end
+  seen[t] = true
+  if rawget(t, "type") == "burner" and rawget(t, "initial_fuel") then
+    local f = item[t.initial_fuel]
+    local ok = false
+    for _, a in pairs(f and f.fuel_categories or {}) do
+      for _, b in pairs(t.fuel_categories or { "chemical" }) do if a == b then ok = true end end
+    end
+    if not ok then fail(where .. " initial_fuel " .. t.initial_fuel .. " does not fit its fuel categories") end
+  end
+  for _, v in pairs(t) do check_burners(where, v, seen) end
+end
+-- furnaces pick recipes from their input, so every recipe they can run needs one item ingredient
+for n, f in pairs(raw.furnace or {}) do
+  local fc = {}
+  for _, c in pairs(f.crafting_categories or {}) do fc[c] = true end
+  for rn, r in pairs(raw.recipe) do
+    local hit = false
+    for _, c in pairs(r.categories or { "crafting" }) do if fc[c] then hit = true end end
+    if hit then
+      local items, fluids = 0, 0
+      for _, i in pairs(r.ingredients or {}) do if i.type == "fluid" then fluids = fluids + 1 else items = items + 1 end end
+      if items > 1 or (fluids > 0 and not f.fluid_boxes) then fail("furnace " .. n .. " category recipe " .. rn .. " has " .. items .. " items/" .. fluids .. " fluids") end
+    end
+  end
+end
+for ty, list in pairs(raw) do for n, p in pairs(list) do check_burners(ty .. "/" .. n, p, {}) end end
 for n, t in pairs(raw.technology) do
   for _, p in pairs(t.prerequisites or {}) do
     if not raw.technology[p] then fail("tech " .. n .. " prerequisite " .. p .. " missing") end
