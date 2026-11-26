@@ -76,7 +76,7 @@ for i, it in ipairs(items) do
     }
     if it.fuel then
       p.fuel_value = it.fuel[1] .. "MJ"
-      p.fuel_category = it.fuel[2]
+      p.fuel_categories = { it.fuel[2] }
     end
     if s and s.phase ~= 3 then p.place_result = s.name end
     new[#new + 1] = p

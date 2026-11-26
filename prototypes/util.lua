@@ -53,8 +53,9 @@ function U.tint_graphics(tbl, tint, seen)
   seen = seen or {}
   if seen[tbl] then return end
   seen[tbl] = true
-  if (tbl.filename or tbl.filenames or tbl.stripes)
-     and not (tbl.draw_as_shadow or tbl.draw_as_light or tbl.draw_as_glow) then
+  local raw = rawget
+  if (raw(tbl, "filename") or raw(tbl, "filenames") or raw(tbl, "stripes"))
+     and not (raw(tbl, "draw_as_shadow") or raw(tbl, "draw_as_light") or raw(tbl, "draw_as_glow")) then
     tbl.tint = rgb(tint)
   end
   for k, v in pairs(tbl) do

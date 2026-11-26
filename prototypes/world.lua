@@ -15,7 +15,7 @@ local function scale_graphics(t, f, seen)
   seen = seen or {}
   if seen[t] then return end
   seen[t] = true
-  if t.filename or t.filenames or t.stripes then
+  if rawget(t, "filename") or rawget(t, "filenames") or rawget(t, "stripes") then
     t.scale = (t.scale or 1) * f
     if t.shift then t.shift = { (t.shift[1] or t.shift.x or 0) * f, (t.shift[2] or t.shift.y or 0) * f } end
   end

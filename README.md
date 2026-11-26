@@ -3,7 +3,7 @@
 A Factorio 2.1 + Space Age overhaul: start with nothing, and craft your way through humanity's real technological history to the Space Age.
 
 ## Status
-**Phase 2: framework.** The mod loads its content from the master data. Phase 3 (world: pickables, new ore patches, excavator) is next.
+**Phases 1 to 6 built; ready for the first playtest.** See `docs/build-notes.md` for Phases 3 to 6 and how to run the offline checks (`tools/check.lua`).
 
 Layout:
 - `data/master/` holds the master data tables, the single source of truth for all content (see the Phase 1 docs).
@@ -16,7 +16,7 @@ Layout:
   - removes quality and all enemy spawning
 - `control.lua` handles the empty start (no items, crash site or intro), the enemy backstop and the help panel. The help panel is the button at the top left that lists the next milestones. It never gives anything.
 
-Not built yet: the excavator entity, pickables, new ore patches, regrowth (Phase 3); Space Age recipe review (Phase 5).
+`prototypes/world.lua` and `script/world.lua` handle ore patches, pickables, regrowth and the excavator.
 
 Install for testing: copy or symlink this folder into your Factorio `mods` folder as `factorio-irl`. It needs Factorio 2.1 with Space Age.
 

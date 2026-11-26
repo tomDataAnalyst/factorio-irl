@@ -13,6 +13,8 @@
 --   per_chunk  attempts per 32x32 chunk
 --   tiles      only on tiles whose name starts with this ("grass", "sand", "red-desert")
 --   near       "water" (chunk has water), "trees" (next to a tree), "ore:<resource>" (next to that ore)
+--   chance     probability per attempt (default 1); min_distance from map centre
+-- planet       surface it spawns on (default "nauvis"); no_regrow = true to skip regrowth
 -- Regrowth: a picked pickable comes back at the same spot after `regrow_minutes`.
 --
 -- richness: multiplier on vanilla-like richness. Global start is 10x (Tom, Q10).
@@ -46,6 +48,17 @@ return {
     near = "around tin-quartz patches", mining_time = 0.8 },
   { name = "iron-nodule",     method = "pickable", spawn = { per_chunk = 5, near = "ore:iron-ore" }, results = { { "iron-ore", 1 } },       entity_from = "big-sand-rock",  tint = { 0.5, 0.55, 0.65 },
     near = "around iron ore patches", mining_time = 0.8 },
+
+  -- Egg sources that replace enemies (pending Tom's decision; recommended option built).
+  -- Space Age only gets pentapod eggs and biter spawners from enemies.
+  { name = "pentapod-egg-nest", method = "pickable", planet = "gleba",
+    spawn = { per_chunk = 1, chance = 0.25 }, results = { { "pentapod-egg", 3 } }, entity_from = "copper-stromatolite", tint = { 0.95, 0.6, 0.75 },
+    near = "anywhere on Gleba land", mining_time = 2,
+    note = "Harmless egg nest. Gives the first eggs for the biochamber; eggs then breed in biochambers as in vanilla." },
+  { name = "dormant-biter-nest", method = "pickable", planet = "nauvis", no_regrow = true,
+    spawn = { per_chunk = 1, chance = 0.02, min_distance = 400 }, results = { { "captive-biter-spawner", 1 } }, entity_from = "big-rock", tint = { 0.6, 0.3, 0.3 },
+    near = "rare, far from the start", mining_time = 10,
+    note = "A dormant nest mined whole into a captive spawner, replacing the capture rocket." },
 
   ---------------------------------------------------------------------------
   -- Trees (vanilla, regrowing)

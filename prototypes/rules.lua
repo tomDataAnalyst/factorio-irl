@@ -25,7 +25,7 @@ for _, it in pairs(items) do
   if it.vanilla and it.fuel then
     local p = U.find_item(it.name)
     if p then
-      p.fuel_category = it.fuel[2]
+      p.fuel_categories = { it.fuel[2] }
       p.fuel_value = it.fuel[1] .. "MJ"
     end
   end

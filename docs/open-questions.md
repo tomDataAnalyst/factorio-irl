@@ -32,6 +32,10 @@
 
 12. **Tools are consumed into stations.** Flint, bronze, iron, machinist and machine tool sets are ingredients of stations, not durable items. That avoids a tool-wear mechanic. *Recommend: accept.*
 
+## Raised during the build
+
+13. **Eggs without enemies.** Space Age only gets pentapod eggs and biter spawners from enemies, so with no enemies the whole Gleba line would be unreachable. *Built with the recommendation:* harmless pentapod egg nests on Gleba (regrow), and rare dormant biter nests on Nauvis that mine into a captive spawner. *Waiting on Tom's decision.*
+
 ## Technical notes for Phase 2 (no decision needed)
 
 - The 2.1 prototype docs confirm `RecipePrototype.categories` is an **array**, so one recipe can belong to several stations. The data relies on this. The docs site's front page says 2.0.76 while the prototype pages say 2.1.25; the 2.1 fields will be re-checked when the generator is written.

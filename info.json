@@ -1,12 +1,13 @@
 {
   "name": "factorio-irl",
-  "version": "0.2.0",
+  "version": "0.6.0",
   "title": "Stone Age to Space Age",
   "author": "tomDataAnalyst",
   "factorio_version": "2.1",
   "description": "Start with nothing and craft your way through humanity's real technological history to the Space Age.",
   "dependencies": [
     "base >= 2.1",
-    "space-age >= 2.1"
+    "space-age >= 2.1",
+    "! quality"
   ]
 }

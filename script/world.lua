@@ -17,6 +17,7 @@ local REGROW_TREE = R.regrow_minutes.tree * 3600
 local WATER = { "water", "deepwater", "water-green", "deepwater-green", "water-shallow", "water-mud" }
 
 local function on_home_planet(surface) return surface.name == "nauvis" end
+local function spawns_on(p, surface) return surface.name == (p.planet or "nauvis") end
 
 local function rand_in(area)
   return { x = area.left_top.x + math.random() * 32, y = area.left_top.y + math.random() * 32 }
@@ -35,12 +36,14 @@ end
 
 ---------------------------------------------------------------- placement
 function W.populate_chunk(surface, area)
-  if not on_home_planet(surface) then return end
   local water_tiles, trees, ores = nil, nil, {}
+  local cx, cy = area.left_top.x + 16, area.left_top.y + 16
   for _, p in pairs(pickables) do
     local s = p.spawn
+    if spawns_on(p, surface) and (not s.min_distance or (cx * cx + cy * cy) >= s.min_distance ^ 2) then
     for _ = 1, s.per_chunk do
       local pos
+      if s.chance and math.random() > s.chance then goto continue end
       if s.near == "water" then
         water_tiles = water_tiles or surface.find_tiles_filtered({ area = area, name = WATER, limit = 64 })
         if #water_tiles > 0 then pos = near(water_tiles[math.random(#water_tiles)].position, 3) end
@@ -60,6 +63,8 @@ function W.populate_chunk(surface, area)
         if not (tile.valid and tile.name:sub(1, #s.tiles) == s.tiles) then pos = nil end
       end
       if pos then try_place(surface, p.name, pos) end
+      ::continue::
+    end
     end
   end
 end
@@ -69,10 +74,12 @@ function W.populate_existing()
   storage.irl_world = storage.irl_world or {}
   if storage.irl_world.populated then return end
   storage.irl_world.populated = true
-  local surface = game.surfaces["nauvis"]
-  if not surface then return end
-  for chunk in surface.get_chunks() do
-    if surface.is_chunk_generated(chunk) then W.populate_chunk(surface, chunk.area) end
+  for _, surface in pairs(game.surfaces) do
+    if not surface.platform then
+      for chunk in surface.get_chunks() do
+        if surface.is_chunk_generated(chunk) then W.populate_chunk(surface, chunk.area) end
+      end
+    end
   end
 end
 
@@ -90,10 +97,13 @@ local function queue()
 end
 
 function W.on_mined(entity)
-  if not (entity and entity.valid) or not on_home_planet(entity.surface) then return end
+  if not (entity and entity.valid) then return end
   local delay
-  if is_pickable[entity.name] then delay = REGROW_PICKABLE
-  elseif entity.type == "tree" then delay = REGROW_TREE
+  local pk = is_pickable[entity.name]
+  if pk then
+    if pk.no_regrow then return end
+    delay = REGROW_PICKABLE
+  elseif entity.type == "tree" and on_home_planet(entity.surface) then delay = REGROW_TREE
   else return end
   local q = queue()
   if #q >= 50000 then return end
