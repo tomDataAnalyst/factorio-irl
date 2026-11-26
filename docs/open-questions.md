@@ -1,6 +1,6 @@
 # Open questions (end of Phase 1)
 
-Each question has a recommendation. The data already follows the recommendation, so a "yes" needs no rework.
+**Status: all 12 recommendations approved by Tom on 2026-11-25.** The data follows them.
 
 ## Decisions for Tom
 
@@ -31,6 +31,10 @@ Each question has a recommendation. The data already follows the recommendation,
 11. **Sulfur placement.** Nauvis has no volcanic ground, so sulfur patches go on red desert. *Recommend: accept.*
 
 12. **Tools are consumed into stations.** Flint, bronze, iron, machinist and machine tool sets are ingredients of stations, not durable items. That avoids a tool-wear mechanic. *Recommend: accept.*
+
+## Raised during the build
+
+13. **Eggs without enemies.** Space Age only gets pentapod eggs and biter spawners from enemies, so with no enemies the whole Gleba line would be unreachable. *Built with the recommendation:* harmless pentapod egg nests on Gleba (regrow), and rare dormant biter nests on Nauvis that mine into a captive spawner. *Waiting on Tom's decision.*
 
 ## Technical notes for Phase 2 (no decision needed)
 

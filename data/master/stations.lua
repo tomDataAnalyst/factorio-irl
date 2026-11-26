@@ -66,6 +66,7 @@ local stations = {
     note = "Burner = a small steam engine driving the machine, abstracted (plan pillar 4)." },
   { name = "excavator",      era = "early-industrial", type = "assembling-machine", entity_from = "burner-mining-drill", tint = { 0.8, 0.7, 0.4 },
     categories = { "excavating" }, energy = { "burner", { "chemical" } }, speed = 1,
+    phase = 3,  -- entity built in Phase 3 (world); Phase 2 only makes the item and recipe
     note = "Recipe is set by script from the tile under it (resources.lua excavator rows). Steam shovel, 1839." },
   { name = "study",          era = "early-industrial", type = "lab", entity_from = "lab", tint = { 0.8, 0.65, 0.45 },
     inputs = { "automation-science-pack" }, energy = { "void" }, speed = 0.5,
@@ -87,6 +88,7 @@ local vanilla_extend = {
   ["assembling-machine-2"] = { add = { "hand", "workbench", "fitting", "turning", "machining", "forging" } },
   ["assembling-machine-3"] = { add = { "hand", "workbench", "fitting", "turning", "machining", "forging" } },
   ["lab"]                  = {},  -- inputs unchanged
+  ["boiler"]               = { fuel_add = { "biomass" } },  -- boilers burn wood too
 }
 
 return {

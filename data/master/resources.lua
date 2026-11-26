@@ -9,35 +9,56 @@
 -- method = "tree"       vanilla trees, which regrow (Tom, Q11).
 -- method = "excavator"  dig-anywhere output chosen by the tile under the excavator.
 --
+-- Pickable `spawn`: placed by script when a Nauvis chunk is generated.
+--   per_chunk  attempts per 32x32 chunk
+--   tiles      only on tiles whose name starts with this ("grass", "sand", "red-desert")
+--   near       "water" (chunk has water), "trees" (next to a tree), "ore:<resource>" (next to that ore)
+--   chance     probability per attempt (default 1); min_distance from map centre
+-- planet       surface it spawns on (default "nauvis"); no_regrow = true to skip regrowth
+-- Regrowth: a picked pickable comes back at the same spot after `regrow_minutes`.
+--
 -- richness: multiplier on vanilla-like richness. Global start is 10x (Tom, Q10).
+-- starting_area/base_density: new-ore autoplace (vanilla iron is 10, stone 4).
 -- tint: {r, g, b} 0-1, applied over the reused vanilla graphics in `entity_from`.
 
 local RICHNESS = 10
 
 return {
   richness_multiplier = RICHNESS,
+  regrow_minutes = { pickable = 10, tree = 30 },
 
   ---------------------------------------------------------------------------
   -- Pickables (Stone Age onward)
   ---------------------------------------------------------------------------
-  { name = "loose-stones",    method = "pickable", results = { { "stone", 2 } },          entity_from = "big-rock",       tint = { 0.8, 0.8, 0.8 },
+  { name = "loose-stones",    method = "pickable", spawn = { per_chunk = 6 }, results = { { "stone", 2 } },          entity_from = "big-rock",       tint = { 0.8, 0.8, 0.8 },
     near = "everywhere except water; denser on red-desert", mining_time = 0.5 },
-  { name = "fallen-sticks",   method = "pickable", results = { { "stick", 3 } },          entity_from = "dead-grey-trunk", tint = { 0.7, 0.55, 0.4 },
+  { name = "fallen-sticks",   method = "pickable", spawn = { per_chunk = 8, near = "trees" }, results = { { "stick", 3 } },          entity_from = "dead-grey-trunk", tint = { 0.7, 0.55, 0.4 },
     near = "under and around trees", mining_time = 0.3 },
-  { name = "flint-nodules",   method = "pickable", results = { { "flint", 1 } },          entity_from = "sand-rock-big",  tint = { 0.35, 0.35, 0.4 },
+  { name = "flint-nodules",   method = "pickable", spawn = { per_chunk = 4 }, results = { { "flint", 1 } },          entity_from = "big-sand-rock",  tint = { 0.35, 0.35, 0.4 },
     near = "near stone patches and on red-desert", mining_time = 0.8 },
-  { name = "fiber-grass",     method = "pickable", results = { { "plant-fiber", 3 } },    entity_from = "dry-hairy-tree", tint = { 0.6, 0.8, 0.3 },
+  { name = "fiber-grass",     method = "pickable", spawn = { per_chunk = 10, tiles = "grass" }, results = { { "plant-fiber", 3 } },    entity_from = "dry-hairy-tree", tint = { 0.6, 0.8, 0.3 },
     near = "grassland", mining_time = 0.3 },
-  { name = "clay-bank",       method = "pickable", results = { { "clay", 2 } },           entity_from = "sand-rock-big",  tint = { 0.75, 0.5, 0.35 },
+  { name = "clay-bank",       method = "pickable", spawn = { per_chunk = 6, near = "water" }, results = { { "clay", 2 } },           entity_from = "big-sand-rock",  tint = { 0.75, 0.5, 0.35 },
     near = "within a few tiles of water", mining_time = 0.6 },
-  { name = "sand-pile",       method = "pickable", results = { { "sand", 2 } },           entity_from = "sand-rock-big",  tint = { 0.95, 0.85, 0.6 },
+  { name = "sand-pile",       method = "pickable", spawn = { per_chunk = 6, tiles = "sand" }, results = { { "sand", 2 } },           entity_from = "big-sand-rock",  tint = { 0.95, 0.85, 0.6 },
     near = "sand tiles and beaches", mining_time = 0.4 },
-  { name = "copper-nodule",   method = "pickable", results = { { "copper-ore", 1 } },     entity_from = "sand-rock-big",  tint = { 0.85, 0.5, 0.3 },
+  { name = "copper-nodule",   method = "pickable", spawn = { per_chunk = 5, near = "ore:copper-ore" }, results = { { "copper-ore", 1 } },     entity_from = "big-sand-rock",  tint = { 0.85, 0.5, 0.3 },
     near = "around copper ore patches", mining_time = 0.8 },
-  { name = "tin-nodule",      method = "pickable", results = { { "tin-ore", 1 } },        entity_from = "sand-rock-big",  tint = { 0.75, 0.75, 0.8 },
+  { name = "tin-nodule",      method = "pickable", spawn = { per_chunk = 5, near = "ore:tin-quartz-vein" }, results = { { "tin-ore", 1 } },        entity_from = "big-sand-rock",  tint = { 0.75, 0.75, 0.8 },
     near = "around tin-quartz patches", mining_time = 0.8 },
-  { name = "iron-nodule",     method = "pickable", results = { { "iron-ore", 1 } },       entity_from = "sand-rock-big",  tint = { 0.5, 0.55, 0.65 },
+  { name = "iron-nodule",     method = "pickable", spawn = { per_chunk = 5, near = "ore:iron-ore" }, results = { { "iron-ore", 1 } },       entity_from = "big-sand-rock",  tint = { 0.5, 0.55, 0.65 },
     near = "around iron ore patches", mining_time = 0.8 },
+
+  -- Egg sources that replace enemies (pending Tom's decision; recommended option built).
+  -- Space Age only gets pentapod eggs and biter spawners from enemies.
+  { name = "pentapod-egg-nest", method = "pickable", planet = "gleba",
+    spawn = { per_chunk = 1, chance = 0.25 }, results = { { "pentapod-egg", 3 } }, entity_from = "copper-stromatolite", tint = { 0.95, 0.6, 0.75 },
+    near = "anywhere on Gleba land", mining_time = 2,
+    note = "Harmless egg nest. Gives the first eggs for the biochamber; eggs then breed in biochambers as in vanilla." },
+  { name = "dormant-biter-nest", method = "pickable", planet = "nauvis", no_regrow = true,
+    spawn = { per_chunk = 1, chance = 0.02, min_distance = 400 }, results = { { "captive-biter-spawner", 1 } }, entity_from = "big-rock", tint = { 0.6, 0.3, 0.3 },
+    near = "rare, far from the start", mining_time = 10,
+    note = "A dormant nest mined whole into a captive spawner, replacing the capture rocket." },
 
   ---------------------------------------------------------------------------
   -- Trees (vanilla, regrowing)
@@ -56,22 +77,22 @@ return {
 
   -- New ores. Mixed patches yield two products per mining cycle
   -- (MinableProperties.results, with probability on the second output).
-  { name = "tin-quartz-vein", method = "ore", entity_from = "iron-ore", tint = { 0.85, 0.85, 0.9 }, richness = RICHNESS,
+  { name = "tin-quartz-vein", method = "ore", starting_area = true, base_density = 8, entity_from = "iron-ore", tint = { 0.85, 0.85, 0.9 }, richness = RICHNESS,
     results = { { "tin-ore", 1 }, { "quartz", 1, probability = 0.5 } },
     placement = "Medium patches, often near copper (bronze needs both early).",
     note = "Cassiterite forms in quartz veins (greisen), so tin and quartz come out together." },
-  { name = "lead-zinc-vein", method = "ore", entity_from = "iron-ore", tint = { 0.55, 0.55, 0.65 }, richness = RICHNESS,
+  { name = "lead-zinc-vein", method = "ore", starting_area = false, base_density = 6, entity_from = "iron-ore", tint = { 0.55, 0.55, 0.65 }, richness = RICHNESS,
     results = { { "lead-ore", 1 }, { "zinc-ore", 1, probability = 0.5 } },
     placement = "Medium patches, further out than the starting ores.",
     note = "Galena (lead) and sphalerite (zinc) are found together in most of the world's lead-zinc deposits." },
-  { name = "limestone", method = "ore", entity_from = "stone", tint = { 0.95, 0.93, 0.8 }, richness = RICHNESS,
+  { name = "limestone", method = "ore", starting_area = true, base_density = 6, entity_from = "stone", tint = { 0.95, 0.93, 0.8 }, richness = RICHNESS,
     results = { { "limestone", 1 } },
     placement = "Large patches near the start; needed from the Clay era (lime) onward." },
-  { name = "sulfur-deposit", method = "ore", entity_from = "stone", tint = { 0.95, 0.9, 0.2 }, richness = RICHNESS,
+  { name = "sulfur-deposit", method = "ore", starting_area = false, base_density = 3, entity_from = "stone", tint = { 0.95, 0.9, 0.2 }, richness = RICHNESS,
     results = { { "sulfur", 1 } },
     placement = "Small patches on red-desert. Nauvis has no volcanic tiles, so red-desert stands in.",
     note = "Native sulfur was mined directly (Sicily) long before it was made from petroleum. Yields the vanilla sulfur item." },
-  { name = "bauxite", method = "ore", entity_from = "copper-ore", tint = { 0.8, 0.45, 0.3 }, richness = RICHNESS,
+  { name = "bauxite", method = "ore", starting_area = false, base_density = 6, entity_from = "copper-ore", tint = { 0.8, 0.45, 0.3 }, richness = RICHNESS,
     results = { { "bauxite", 1 } },
     placement = "Medium patches far from the start; only needed in the Modern era (aluminium)." },
 

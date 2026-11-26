@@ -153,6 +153,6 @@ return {
      hint = "Build a rocket silo and launch a rocket.",
      done = { "item-produced", "rocket-part", 1 }, requires = { "first-aluminium" } },
   M{ id = "first-platform", era = "modern", title = "A space platform",
-     hint = "Every planet is open to you once you have a platform. Asteroids will test your defences.",
-     done = { "entity-built", "space-platform-hub", 1 }, requires = { "first-rocket" } },
+     hint = "Make a space platform starter pack and launch it. Every planet is open to a platform. Asteroids will test your defences.",
+     done = { "item-produced", "space-platform-starter-pack", 1 }, requires = { "first-rocket" } },
 }
