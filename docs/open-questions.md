@@ -1,6 +1,6 @@
 # Open questions (end of Phase 1)
 
-Each question has a recommendation. The data already follows the recommendation, so a "yes" needs no rework.
+**Status: all 12 recommendations approved by Tom on 2026-11-25.** The data follows them.
 
 ## Decisions for Tom
 
