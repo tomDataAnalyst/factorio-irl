@@ -13,6 +13,7 @@ local recipes  = U.master("recipes")
 local st       = U.master("stations")
 local research = U.master("research")
 local eras     = U.master("eras")
+local world    = U.master("resources")
 
 local era_order = {}
 for _, e in pairs(eras) do era_order[e.name] = e.order end
@@ -225,6 +226,21 @@ for _, planet in pairs(data.raw.planet or {}) do
     local ent = mgs.autoplace_settings and mgs.autoplace_settings.entity
     if ent and ent.settings then
       for n in pairs(ent.settings) do if is_enemy[n] then ent.settings[n] = nil end end
+    end
+  end
+end
+
+---------------------------------------------------------------------------
+-- Very rich ore patches (plan 3.2, Tom Q10): multiply richness on Nauvis ores
+---------------------------------------------------------------------------
+for _, r in ipairs(world) do
+  if r.method == "ore" then
+    local p = data.raw.resource[r.name]
+    local ap = p and p.autoplace
+    if ap and ap.richness_expression then
+      ap.richness_expression = tostring(world.richness_multiplier) .. " * (" .. ap.richness_expression .. ")"
+    elseif p then
+      log("[factorio-irl] no richness_expression on " .. r.name)
     end
   end
 end
